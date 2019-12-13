@@ -3,7 +3,7 @@ package day6
 import scala.io.Source
 
 object Orbits {
-  val filename = "/home/royvs/Programming/advent_of_code_2019/src/resources/day6.txt"
+  val filename = "src/resources/day6.txt"
 
   def run():Unit = {
     val orbits = Source.fromFile(filename).getLines().toList

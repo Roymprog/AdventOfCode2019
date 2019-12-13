@@ -4,7 +4,7 @@ import day2.Intcode
 import day2.Intcode.{Code, Opcode}
 
 object ExtendedIntcode {
-  val filename = "/home/royvs/Programming/advent_of_code_2019/src/resources/day5.txt"
+  val filename = "src/resources/day5.txt"
 
   def run(): Unit = {
     val codeList = Intcode.getIntList(filename)

@@ -3,7 +3,7 @@ package day2
 import scala.io.Source
 
 object Intcode {
-  val filename = "/home/royvs/Programming/advent_of_code_2019/src/resources/day2.txt"
+  val filename = "src/resources/day2.txt"
 
   def run(): Unit = {
     for (i <- 0 until 99;

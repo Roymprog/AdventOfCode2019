@@ -3,7 +3,7 @@ package day3
 import scala.io.Source
 
 object Wires {
-  val filename = "/home/royvs/Programming/advent_of_code_2019/src/resources/day3.txt"
+  val filename = "src/resources/day3.txt"
 
   def run():Unit = {
     val input = Source.fromFile(filename).getLines
