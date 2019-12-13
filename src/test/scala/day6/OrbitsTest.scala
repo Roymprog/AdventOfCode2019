@@ -21,4 +21,30 @@ class OrbitsTest extends FlatSpec with Matchers {
     val name = "TST"
     List(new Orbits.Planet(name)).contains(new Orbits.Planet(name)) shouldBe true
   }
+
+  "List of planets" should "have child" in {
+    val orbits = "COM)B\nB)C\nC)D\nD)E\nE)F\nB)G\nG)H\nD)I\nE)J\nJ)K\nK)L\nB)M\nB)N"
+    val solarSystem =  new SolarSystem(orbits.split("\n").toList)
+    solarSystem.com.hasChild("N") shouldBe true
+
+    val D = solarSystem.com.getPlanet("D").get
+    D.hasChild("I") shouldBe true
+  }
+
+  "Path to B" should "be COM-B" in {
+    val orbits = "COM)B\nB)C\nC)D\nD)E\nE)F\nB)G\nG)H\nD)I\nE)J\nJ)K\nK)L\nB)M\nB)N"
+    val solarSystem =  new SolarSystem(orbits.split("\n").toList)
+
+    solarSystem.com.getPathTo("B").get shouldBe List("COM")
+
+    solarSystem.com.getPathTo("K").get shouldBe List("COM", "B", "C", "D", "E", "J")
+  }
+
+  "Path to YOU" should "equal path ot SNT" in {
+    val orbits = "COM)B\nB)C\nC)D\nD)E\nE)F\nB)G\nG)H\nD)I\nE)J\nJ)K\nK)L\nK)YOU\nI)SAN"
+    val solarSystem =  new SolarSystem(orbits.split("\n").toList)
+
+    solarSystem.com.getPathDiffs("YOU", "SAN") shouldBe 4
+  }
+
 }

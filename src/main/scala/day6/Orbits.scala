@@ -4,12 +4,16 @@ import scala.io.Source
 
 object Orbits {
   val filename = "src/resources/day6.txt"
+  val orbits = Source.fromFile(filename).getLines().toList
+  val solarSystem = new SolarSystem(orbits)
 
-  def run():Unit = {
-    val orbits = Source.fromFile(filename).getLines().toList
-    val solarSystem = new SolarSystem(orbits)
+  def run1():Unit = {
 
     println(s"Amount of orbits in solar system are: ${solarSystem.com.orbitCount()}")
+  }
+
+  def run2():Unit = {
+    println(s"Amount of orbits between us and Santa is: ${solarSystem.com.getPathDiffs("YOU", "SAN")}")
   }
 
   class SolarSystem(orbits: List[String]) {
@@ -44,6 +48,8 @@ object Orbits {
       val planets = s.split(')')
       (new Planet(planets(0)), new Planet(planets(1)))
     }
+
+
   }
 
   class Planet(id:String) {
@@ -72,6 +78,20 @@ object Orbits {
       }
     }
 
+    def getPlanet(id: String) :Option[Planet] = {
+      if (hasChild(id)) {
+        if (this.id == id) {
+          Some(this)
+        } else if (children.map(child => child.hasChild(id)).isEmpty) {
+          None
+        } else {
+          children.flatMap(child => child.getPlanet(id)).find(planetOption => planetOption != None)
+        }
+      } else {
+        None
+      }
+    }
+
     def canEqual(a: Any):Boolean = a.isInstanceOf[Planet]
 
     override def equals(that: Any) :Boolean = {
@@ -86,6 +106,27 @@ object Orbits {
 
     def orbitCount(depth: Int = 0): Int = {
       depth + children.map(child => child.orbitCount(depth+1)).sum
+    }
+
+    def getPathTo(name:String, path : List[String] = List()):Option[List[String]] = {
+      if (this.id == name) {
+        Some(path)
+      }else if(this.children.isEmpty) {
+        None
+      } else {
+        val results = children.map(child => child.getPathTo(name, path.appended(this.id))).flatten
+        results.size match {
+          case 0 => None
+          case _ => Some(results.flatten)
+        }
+      }
+    }
+
+    def getPathDiffs(s1:String, s2:String):Int = {
+      val path1 = this.getPathTo(s1).get
+      val path2 = this.getPathTo(s2).get
+
+      (path1.toSet diff path2.toSet).size + (path2.toSet diff path1.toSet).size
     }
   }
 }

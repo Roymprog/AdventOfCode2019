@@ -62,7 +62,7 @@ class ExtendedCodeSpec extends FlatSpec with Matchers{
     val array = Array(3,5,99,4,99,13798)
     val code = new ExtendedCode(array)
     code.executeCode()
-    array shouldBe Array(3,5,99,4,99,1)
+    array shouldBe Array(3,5,99,4,99,0)
   }
 
   "Executing code 2" should "multiple 3 and 133 in place and store in index 4" in {

@@ -80,7 +80,7 @@ class PasswordOptionsSpec extends FlatSpec with Matchers{
 
   "isPasswordOption" should "adhere to examples" in {
     val correct1 = 222222
-    true shouldBe password.isPasswordOption(correct1)
+    false shouldBe password.isPasswordOption(correct1)
 
     val correct2 = 223344
     true shouldBe password.isPasswordOption(correct2)

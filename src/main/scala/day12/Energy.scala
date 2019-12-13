@@ -12,7 +12,7 @@ class Energy {
 
     def timeStep(n :Int): Array[Moon] = {
       moons.map(moon => moon.applyGravity(moons))
-        .map(moon => moon.applyVelocity())
+           .map(moon => moon.applyVelocity())
     }
 
 

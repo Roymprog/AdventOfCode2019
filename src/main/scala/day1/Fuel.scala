@@ -1,5 +1,6 @@
 package day1
 
+import scala.annotation.tailrec
 import scala.io.Source
 
 object Fuel {
@@ -17,6 +18,7 @@ object Fuel {
     mass / 3 - 2
   }
 
+  @tailrec
   def extraFuel(fuel: Int, total: Int = 0): Int = {
     val extra = calcFuel(fuel)
     if (extra <= 0) {
