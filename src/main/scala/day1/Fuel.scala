@@ -4,7 +4,7 @@ import scala.io.Source
 
 object Fuel {
   def run(): Unit = {
-    val filename = "src/resources.txt"
+    val filename = "src/resources/day1.txt"
     var massFuel = 0
     for (line <- Source.fromFile(filename).getLines) {
       massFuel = massFuel + extraFuel(line.toInt)
