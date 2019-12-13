@@ -4,8 +4,9 @@ import day3.Wires
 import day4.PasswordOptions
 import day5.ExtendedIntcode
 import day6.Orbits
+import day12.Energy
 
 object Main extends App {
-  Orbits.run2()
+  Energy.run1()
 }
 

@@ -6,8 +6,8 @@ object Intcode {
   val filename = "src/resources/day2.txt"
 
   def run(): Unit = {
-    for (i <- 0 until 99;
-         j <- 0 until 99 if runCode(i, j) == 19690720)
+    for (i <- 0 until 100;
+         j <- 0 until 100 if runCode(i, j) == 19690720)
      println("100*noun(%d) + verb(%d) = %d", i,j,100*i+j)
   }
 
@@ -49,6 +49,7 @@ object Intcode {
         case Opcode(1) => applyOperator(add)
         case Opcode(2) => applyOperator(multiply)
         case Opcode(99) => operators(0)
+        case _ => throw new Exception("Unknown opcode encountered")
       }
     }
 

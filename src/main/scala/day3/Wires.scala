@@ -15,9 +15,9 @@ object Wires {
     val intersections = wire1.getIntersections(wire2)
 
     val closest = closestToOrigin(intersections)
-    val shortestSignal = shortestSignalPath(intersections, wire1, wire2)
-
     println("Manhattan distance of point closest to origin is %d", manhattanDistance(closest))
+
+    val shortestSignal = shortestSignalPath(intersections, wire1, wire2)
     println("Shortest combined path is %d", summedDistanceToPoint(shortestSignal, wire1, wire2))
   }
 
