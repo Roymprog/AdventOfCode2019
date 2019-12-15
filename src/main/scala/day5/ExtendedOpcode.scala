@@ -23,15 +23,11 @@ object ExtendedIntcode {
         case Opcode(1) => applyOperator(add)
         case Opcode(2) => applyOperator(multiply)
         case Opcode(3) => {
-           operators(operators(index+1)) = this.input
+           operators(operators(index+1)) = getInputInstruction()
            moveIndex(2)
            executeCode()
         }
-        case Opcode(4) => {
-           println(operators(operators(index+1)))
-           moveIndex(2)
-           executeCode()
-        }
+        case Opcode(4) => executeOpcode4()
         case Opcode(5) => {
           jumpIf(true)
           executeCode()
@@ -50,9 +46,19 @@ object ExtendedIntcode {
           super.moveIndex()
           executeCode()
         }
-        case Opcode(99) => operators(0)
+        case Opcode(99) => getOutput()
       }
     }
+
+    def executeOpcode4():Int = {
+      println(operators(operators(index+1)))
+      moveIndex(2)
+      executeCode()
+    }
+
+    def getOutput() = operators(0)
+
+    def getInputInstruction():Int = this.input
 
     def jumpIf(condition: Boolean):Unit = {
       if ((getFirstInput() != 0) == condition) {

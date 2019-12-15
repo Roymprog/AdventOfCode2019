@@ -62,7 +62,9 @@ object Intcode {
     }
 
     def applyOperator(op : (Int, Int) => Int) = {
-      val output = op(getFirstInput(), getSecondInput())
+      val first = getFirstInput()
+      val second = getSecondInput()
+      val output = op(first, second)
       storeOutput(output)
       moveIndex()
       executeCode()
