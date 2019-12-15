@@ -6,12 +6,11 @@ import org.scalatest.FlatSpec
 import org.scalatest.matchers.should.Matchers
 
 class EnergyTest extends FlatSpec with Matchers {
-  val io = new Moon(Position(-1,0,2), name="Io")
-  val europa = new Moon(Position(2, -10, -7),name= "Europa")
-  val ganymede = new Moon(Position(4, -8, 8), name="Ganymede")
-  val callisto = new Moon(Position(3,5,-1), name="Callisto")
 
   "Applying gravity" should "work for 2 moon system" in {
+    val io = new Moon(Position(-1,0,2), name="Io")
+    val europa = new Moon(Position(2, -10, -7),name= "Europa")
+
     val system = new Energy.System(Array(io,europa))
     val Io = system.getMoon("Io").get
     val Europa = system.getMoon("Europa").get
@@ -29,6 +28,11 @@ class EnergyTest extends FlatSpec with Matchers {
   }
 
   "List of orbits" should "build solar system" in {
+    val io = new Moon(Position(-1,0,2), name="Io")
+    val europa = new Moon(Position(2, -10, -7),name= "Europa")
+    val ganymede = new Moon(Position(4, -8, 8), name="Ganymede")
+    val callisto = new Moon(Position(3,5,-1), name="Callisto")
+
     val system = new Energy.System(Array(io,europa,ganymede,callisto))
     system.timeStep(0)
 
@@ -74,8 +78,40 @@ class EnergyTest extends FlatSpec with Matchers {
   }
 
   "Total system energy" should "be 179" in {
+    val io = new Moon(Position(-1,0,2), name="Io")
+    val europa = new Moon(Position(2, -10, -7),name= "Europa")
+    val ganymede = new Moon(Position(4, -8, 8), name="Ganymede")
+    val callisto = new Moon(Position(3,5,-1), name="Callisto")
+
     val system = new Energy.System(Array(io, europa, ganymede, callisto))
     system.timeStep(10)
     system.getTotalEnergy() shouldBe 179
+  }
+
+  "System repeat" should "converge after 2772" in {
+    val io = new Moon(Position(-1,0,2), name="Io")
+    val europa = new Moon(Position(2, -10, -7),name= "Europa")
+    val ganymede = new Moon(Position(4, -8, 8), name="Ganymede")
+    val callisto = new Moon(Position(3,5,-1), name="Callisto")
+
+    val system = new Energy.System(Array(io,europa,ganymede,callisto))
+
+    system.repeatsDimensionAfter(2800) shouldBe (18,28, 44)
+    system.sharedCycle(18,28,44) shouldBe 2772
+  }
+
+  "System repeat" should "converge after 4686774924" in {
+    val io = new Moon(Position(-8,-10,0), name="Io")
+    val europa = new Moon(Position(5, 5, 10),name= "Europa")
+    val ganymede = new Moon(Position(2, -7, 3), name="Ganymede")
+    val callisto = new Moon(Position(9,-8,-3), name="Callisto")
+
+    val system = new Energy.System(Array(io,europa,ganymede,callisto))
+
+    val (x,y,z) = system.repeatsDimensionAfter(4000,stepSize = 2)
+//    val (x2,y2,z2) = system.repeatsDimensionAfter(1,stepSize = 2028)
+//    val (x3,y3,z3) = system.repeatsDimensionAfter(1,stepSize = 2028)
+    (x,y,z) shouldBe (2028,5898,4702)
+    system.sharedCycle(x,y,z) shouldBe 4686774924L
   }
 }

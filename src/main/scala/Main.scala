@@ -7,6 +7,6 @@ import day6.Orbits
 import day12.Energy
 
 object Main extends App {
-  Energy.run1()
+  Energy.run2()
 }
 
