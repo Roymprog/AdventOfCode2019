@@ -5,9 +5,10 @@ import day4.PasswordOptions
 import day5.ExtendedIntcode
 import day6.Orbits
 import day7.ThrusterOpcode
+import day8.Images
 import day12.Energy
 
 object Main extends App {
-  ThrusterOpcode.run2()
+  Images.run1()
 }
 
