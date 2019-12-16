@@ -9,6 +9,6 @@ import day8.Images
 import day12.Energy
 
 object Main extends App {
-  Images.run1()
+  Images.run2()
 }
 
