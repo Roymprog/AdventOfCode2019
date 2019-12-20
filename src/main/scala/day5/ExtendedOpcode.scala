@@ -17,12 +17,19 @@ object ExtendedIntcode {
     var B = 0
     var C = 0
     var DE = 0
+    protected var relativeBase = 0
+
+    def executeOpcode9(): Int = {
+      moveIndex(2)
+      executeCode()
+    }
 
     override def executeCode(): Int = {
       getOpcode() match {
         case Opcode(1) => applyOperator(add)
         case Opcode(2) => applyOperator(multiply)
         case Opcode(3) => {
+
            operators(operators(index+1)) = getInputInstruction()
            moveIndex(2)
            executeCode()
@@ -46,12 +53,13 @@ object ExtendedIntcode {
           super.moveIndex()
           executeCode()
         }
+        case Opcode(9) => executeOpcode9()
         case Opcode(99) => getOutput()
       }
     }
 
     def executeOpcode4():Int = {
-      println(operators(operators(index+1)))
+      println(getFirstInput())
       moveIndex(2)
       executeCode()
     }
@@ -88,6 +96,7 @@ object ExtendedIntcode {
       A match {
         case 0 => super.getStorageIndex()
         case 1 => index + 3
+        case 2 => super.getStorageIndex() + relativeBase
         case _ => throw new Exception("Mode of $parameter instruction is incorrect")
       }
     }
@@ -96,6 +105,7 @@ object ExtendedIntcode {
       parameter match {
         case 0 => overwritten()
         case 1 => operators(index + offset)
+        case 2 => operators(operators(index + offset) + relativeBase)
         case _ => throw new Exception("Mode of $parameter instruction is incorrect")
       }
     }
