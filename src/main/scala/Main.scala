@@ -11,6 +11,6 @@ import day10.Monitoring
 import day12.Energy
 
 object Main extends App {
-  Monitoring.run1()
+  Monitoring.run2()
 }
 

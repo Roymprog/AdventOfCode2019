@@ -2,7 +2,9 @@ package day10
 
 import day10.Monitoring.Asteroids
 import day8.Images.filename
-import Math.{atan,round}
+import Math.{atan, round}
+
+import scala.collection.immutable.{HashMap, TreeMap}
 import scala.io.Source
 
 object Monitoring {
@@ -14,24 +16,20 @@ object Monitoring {
     println(s"Most asteroid detectable is: ${asteroids.getMostAsteroidsVisible()}")
   }
 
+  def run2() = {
+    val asteroids = new Asteroids(input)
+    println(s"Multiplied coordinates x by 100 and add y of 200th asteroid results in: ${asteroids.getNthVaporized(200)}")
+  }
+
   // Y-axis is inverted in given grid, account for this
-  def angle(origin: Asteroid, a:Asteroid) :Int = {
+  def angle(origin: Asteroid, a:Asteroid) :Double = {
     val x = -(a.x.floatValue() - origin.x.floatValue())
     val y = a.y.floatValue() - origin.y.floatValue()
     var bonus = 0
     if (y >= 0 ) {
       bonus = bonus + 180
     }
-//    if (x < 0) {
-//      bonus = bonus + 180
-//    }
-//    else if (y > 0) {
-//      bonus = 90
-//    }
-//    if ( x<0 ) {
-//      bonus = 180
-//    }
-    var angle = (atan(x/y).toDegrees.toInt +bonus)
+    val angle = atan(x/y).toDegrees + bonus
     if (angle < 0) {
         angle + 360
     } else {
@@ -40,14 +38,48 @@ object Monitoring {
   }
 
   class Asteroids(input:String) {
-    val (width, height, asteroids) = parseInput(input)
+    var (width, height, asteroids) = parseInput(input)
     val bestAsteroid = getBestAsteroid()
 
+    def vaporize() : Iterable[Asteroid] = {
+      // Stop if asteroids only contains station asteroid
+      if (asteroids.size == 1) {
+        return Iterable.empty
+      }
+      val round = getRound()
+      asteroids = asteroids.diff(round.toSeq)
+      round ++ vaporize()
+    }
 
-    def angleSorted(asteroids: IndexedSeq[Asteroid]): IndexedSeq[(Int, Asteroid)] = {
+    def getNthVaporized(n: Int) :Int = {
+      var i = 1
+      for (asteroid <- vaporize()) {
+        println(s"Asteroid ${i} to be vaporized: (${asteroid.x}, ${asteroid.y})")
+        if (i  == n ) {
+          return asteroid.x*100 + asteroid.y
+        }
+        i = i + 1
+      }
+      0
+    }
+
+    def angleSorted(asteroids: IndexedSeq[Asteroid]): TreeMap[Int, IndexedSeq[(Double, Int, Asteroid)]] = {
       asteroids.filter(asteroid => asteroid != bestAsteroid)
-               .map(asteroid => (angle(bestAsteroid, asteroid), asteroid))
-               .sortBy(_._1)
+               .map(asteroid => (angle(bestAsteroid, asteroid), distance(bestAsteroid, asteroid),  asteroid))
+               .groupBy(x => (x._1*100).toInt)
+//        Keeps sorted order of keys
+               .to(TreeMap)
+    }
+
+    def distance(a:Asteroid, b: Asteroid) :Int = {
+      (a.x - b.x).abs + (a.y - b.y).abs
+    }
+
+    def getRound() :Iterable[Asteroid] = {
+      val iter = for ((_,v) <- angleSorted(asteroids))
+        // get one with shortest distance first
+        yield v.sortBy(a => a._2).head._3
+      iter.toIndexedSeq
     }
 
     def getBestAsteroid() :Asteroid = {
