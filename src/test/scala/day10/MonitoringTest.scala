@@ -47,4 +47,24 @@ class MonitoringTest extends FlatSpec with Matchers{
     asteroids.getBestAsteroid() shouldBe Asteroid(11,13)
     asteroids.getMostAsteroidsVisible() shouldBe 210
   }
+
+  "Asteroid rotatoin" should "return correct path order" in {
+    val asteroids = new Asteroids(".#....#####...#..\n##...##.#####..##\n##...#...#.#####.\n..#.....X...###..\n..#.#.....#....##")
+    asteroids.getBestAsteroid() shouldBe Asteroid(8,3)
+    val angleSorted = asteroids.angleSorted(asteroids.asteroids)
+    angleSorted shouldBe IndexedSeq(Asteroid(1,0), Asteroid(1,-3),Asteroid(1,-2))
+  }
+
+  "Angle calc" should "return degrees" in {
+    Monitoring.angle(Asteroid(0,0), Asteroid(0, -5)) shouldBe 0
+    Monitoring.angle(Asteroid(0,0), Asteroid(1,-1)) shouldBe 45
+    Monitoring.angle(Asteroid(0,0), Asteroid(1,0)) shouldBe 90
+    Monitoring.angle(Asteroid(0,0), Asteroid(1, 1)) shouldBe 135
+    Monitoring.angle(Asteroid(0,0), Asteroid(0, 5)) shouldBe 180
+    Monitoring.angle(Asteroid(0,0), Asteroid(-1,1)) shouldBe 225
+    Monitoring.angle(Asteroid(0,0), Asteroid(-1,0)) shouldBe 270
+    Monitoring.angle(Asteroid(0,0), Asteroid(-1,-1)) shouldBe 315
+    Monitoring.angle(Asteroid(0,0), Asteroid(0,-1)) shouldBe 0
+    Monitoring.angle(Asteroid(8,3), Asteroid(8,1)) shouldBe 0
+  }
 }

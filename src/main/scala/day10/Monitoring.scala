@@ -2,7 +2,7 @@ package day10
 
 import day10.Monitoring.Asteroids
 import day8.Images.filename
-
+import Math.{atan,round}
 import scala.io.Source
 
 object Monitoring {
@@ -14,8 +14,41 @@ object Monitoring {
     println(s"Most asteroid detectable is: ${asteroids.getMostAsteroidsVisible()}")
   }
 
+  // Y-axis is inverted in given grid, account for this
+  def angle(origin: Asteroid, a:Asteroid) :Int = {
+    val x = -(a.x.floatValue() - origin.x.floatValue())
+    val y = a.y.floatValue() - origin.y.floatValue()
+    var bonus = 0
+    if (y >= 0 ) {
+      bonus = bonus + 180
+    }
+//    if (x < 0) {
+//      bonus = bonus + 180
+//    }
+//    else if (y > 0) {
+//      bonus = 90
+//    }
+//    if ( x<0 ) {
+//      bonus = 180
+//    }
+    var angle = (atan(x/y).toDegrees.toInt +bonus)
+    if (angle < 0) {
+        angle + 360
+    } else {
+      angle
+    }
+  }
+
   class Asteroids(input:String) {
     val (width, height, asteroids) = parseInput(input)
+    val bestAsteroid = getBestAsteroid()
+
+
+    def angleSorted(asteroids: IndexedSeq[Asteroid]): IndexedSeq[(Int, Asteroid)] = {
+      asteroids.filter(asteroid => asteroid != bestAsteroid)
+               .map(asteroid => (angle(bestAsteroid, asteroid), asteroid))
+               .sortBy(_._1)
+    }
 
     def getBestAsteroid() :Asteroid = {
       asteroidsVisible(asteroids).last._1
