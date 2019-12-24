@@ -8,10 +8,10 @@ import day9.SensorBoost.RelativeBaseOpcode
 object HullPainter {
   val filename = "src/resources/day11.txt"
   val longs = SensorBoost.getLongs(filename)
-  val (robot, panels) = parseGrid(".....\n.....\n..^..\n.....\n.....")
-  val grid = new Grid(robot, panels)
 
   def run1() = {
+    val (robot, panels) = parseGrid(".....\n.....\n..^..\n.....\n.....")
+    val grid = new Grid(robot, panels)
     val opcode = new RelativeBaseOpcode(longs)
     while(opcode.getOpcode() != Opcode(99)) {
       opcode.input = grid.getInput()
@@ -21,7 +21,36 @@ object HullPainter {
         grid.processInstructions(first,second)
       }
     }
-    println(s"Painted tiles is: ${grid.getPaintedPanels()}")
+    println(s"Painted tiles is: ${grid.countPaintedPanels()}")
+  }
+
+  def run2() = {
+    val (robot, panels) = parseGrid(".....\n.....\n..^..\n.....\n.....", 1)
+    val grid = new Grid(robot, panels)
+    val opcode = new RelativeBaseOpcode(longs)
+    while(opcode.getOpcode() != Opcode(99)) {
+      opcode.input = grid.getInput()
+      val first = getOutput(opcode)
+      val second = getOutput(opcode)
+      if ((first >= 0) && (second >= 0) ) {
+        grid.processInstructions(first,second)
+      }
+    }
+    val minx = grid.getPaintedPanels().foldLeft(0)((min, panel) => if (panel.coordinate.x < min) panel.coordinate.x else min  )
+    val miny = grid.getPaintedPanels().foldLeft(0)((min, panel) => if (panel.coordinate.y < min) panel.coordinate.y else min  )
+    val maxx = grid.getPaintedPanels().foldLeft(0)((max, panel) => if (panel.coordinate.x > max) panel.coordinate.x else max  )
+    val maxy = grid.getPaintedPanels().foldLeft(0)((max, panel) => if (panel.coordinate.y > max) panel.coordinate.y else max  )
+    val paintedPanels = grid.getPaintedPanels()
+    for(y <- miny to maxy; x <- minx to maxx ) {
+      val panel = paintedPanels.find(panel => panel.coordinate == Coordinate(x,y))
+      paintedPanels.find(panel => panel.coordinate == Coordinate(x,y)) match {
+        case None => print(" ")
+        case _  => if (panel.get.color== 0) print(" ") else print("8")
+      }
+      if (x == maxx) {
+        println("")
+      }
+    }
   }
 
   def getOutput(opcode: RelativeBaseOpcode) :Int = {
@@ -47,9 +76,9 @@ object HullPainter {
     new Robot(0,0, '^')
   }
 
-  def parseGrid(grid: String) : (Robot, IndexedSeq[Panel]) = {
+  def parseGrid(grid: String, robotColor:Int = 0) : (Robot, IndexedSeq[Panel]) = {
     def parseLine(s:String, lineNr:Int) :IndexedSeq[Panel] = {
-      def getColor(c:Char):Int = if (c == '#') 1 else 0
+      def getColor(c:Char):Int = if (c == '#') 1 else if (c == '^') robotColor else 0
       for (i <- 0 until s.length)
         yield new Panel(i, lineNr, getColor(s(i)))
     }
@@ -68,7 +97,11 @@ object HullPainter {
       }
     }
 
-    def getPaintedPanels():Int = {
+    def getPaintedPanels() :IndexedSeq[Panel] = {
+      panels.filter(panel => panel.painted)
+    }
+
+    def countPaintedPanels():Int = {
       panels.count(panel => panel.painted)
     }
 

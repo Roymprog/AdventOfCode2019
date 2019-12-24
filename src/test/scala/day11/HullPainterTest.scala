@@ -31,7 +31,7 @@ class HullPainterTest extends FlatSpec with Matchers{
     grid.processInstructions(0,1)
     grid.processInstructions(1,0)
     grid.processInstructions(1,0)
-    grid.getPaintedPanels() shouldBe 6
+    grid.countPaintedPanels() shouldBe 6
     grid.robot.direction shouldBe '<'
     grid.robot.coordinate shouldBe Coordinate(2,1)
   }

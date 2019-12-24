@@ -12,6 +12,6 @@ import day11.HullPainter
 import day12.Energy
 
 object Main extends App {
-  HullPainter.run1()
+  HullPainter.run2()
 }
 
