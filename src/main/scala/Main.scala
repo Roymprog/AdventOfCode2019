@@ -10,8 +10,9 @@ import day9.SensorBoost
 import day10.Monitoring
 import day11.HullPainter
 import day12.Energy
+import day13.Arcade
 
 object Main extends App {
-  HullPainter.run2()
+  Arcade.run2()
 }
 

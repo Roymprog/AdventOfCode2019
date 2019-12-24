@@ -107,7 +107,7 @@ object SensorBoost {
     }
 
     def executeOpcode4():Unit = {
-      println(s"Returned: ${getFirst()}")
+//      println(s"Returned: ${getFirst()}")
       output = Some(getFirst())
       moveIndex(2)
 //      executeLongCode()
