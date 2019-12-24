@@ -2,6 +2,7 @@ package day9
 
 import day2.Intcode.{Code, Opcode}
 import day5.ExtendedIntcode.ExtendedCode
+import day9.SensorBoost.filename
 
 import scala.io.Source
 
@@ -9,28 +10,37 @@ object SensorBoost {
   val filename = "src/resources/day9.txt"
 
   def run1() ={
-    val fileContents = Source.fromFile(filename).getLines.mkString
-    val longs =fileContents.split(",").map(string => string.toLong).toList
+    val longs = getLongs(filename)
     val boost = new RelativeBaseOpcode(longs, 1)
 
-    println(s"Boost code produces: ${boost.executeLongCode()}")
+    while(boost.getOpcode() != Opcode(99)) {
+      boost.executeLongCode()
+    }
+    println(s"Boost code produces: ${boost.getOutput()}")
   }
 
   def run2() ={
-    val fileContents = Source.fromFile(filename).getLines.mkString
-    val longs =fileContents.split(",").map(string => string.toLong).toList
+    val longs = getLongs(filename)
     val boost = new RelativeBaseOpcode(longs, 2)
 
-    println(s"Boost program distress coordinates: ${boost.executeLongCode()}")
+    while(boost.getOpcode() != Opcode(99)) {
+      boost.executeLongCode()
+    }
+      println(s"Boost program distress coordinates: ${boost.getOutput()}")
   }
 
-  class RelativeBaseOpcode(operators: List[Long], input: Long = 0) extends Code(operators.map(x => x.toInt).toArray) {
+  def getLongs(filename:String) :List[Long] = {
+    val fileContents = Source.fromFile(filename).getLines.mkString
+    fileContents.split(",").map(string => string.toLong).toList
+  }
+
+  class RelativeBaseOpcode(val operators: List[Long], var input: Long = 0) extends Code(operators.map(x => x.toInt).toArray) {
     var A = 0
     var B = 0
     var C = 0
     var DE = 0
     var relativeBase :Long = 0
-    var output :Long = 0
+    var output : Option[Long] = None
     var tupleOperators = operators.zipWithIndex
 
     def getAtIndex(i:Int) :Long = {
@@ -51,9 +61,7 @@ object SensorBoost {
 //      executeLongCode()
     }
 
-    def executeLongCode(): Long = {
-      var out :Long = 0
-      while(out == 0) {
+    def executeLongCode(): Unit = {
         getOpcode() match {
           case Opcode(1) => applyOperator((a:Long,b:Long) => a+b)
           case Opcode(2) => applyOperator((a:Long,b:Long) => a*b)
@@ -90,23 +98,26 @@ object SensorBoost {
 //            executeLongCode()
           }
           case Opcode(9) => executeOpcode9()
-          case Opcode(99) => out = getOutput()
+          case Opcode(99) =>  {
+            val x = 0
+          }
           case Opcode(_) => {
             throw new RuntimeException("Unknown opcode")}
         }
-
-      }
-      out
     }
 
     def executeOpcode4():Unit = {
       println(s"Returned: ${getFirst()}")
-      output = getFirst()
+      output = Some(getFirst())
       moveIndex(2)
 //      executeLongCode()
     }
 
-    def getOutput() = output
+    def getOutput():Option[Long] = {
+      val tmp = output
+      output = None
+      tmp
+    }
 
     def getInputInstruction():Long = this.input
 

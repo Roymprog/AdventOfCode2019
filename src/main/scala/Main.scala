@@ -8,9 +8,10 @@ import day7.ThrusterOpcode
 import day8.Images
 import day9.SensorBoost
 import day10.Monitoring
+import day11.HullPainter
 import day12.Energy
 
 object Main extends App {
-  Monitoring.run2()
+  HullPainter.run1()
 }
 
